@@ -119,9 +119,10 @@ class State:
             self.description = self._state
 
     def __str__(self) -> str:
-        return f"<State '{self.state or ''}'>"
+        return self._state
 
-    __repr__ = __str__
+    def __repr__(self) -> str:
+        return f"<State '{self.state or ''}'>"
 
     def __eq__(self, other: Any) -> bool:
         if inspect.isclass(other):
@@ -236,6 +237,11 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
             return cls
         return cls.__parent__.get_root()
 
+    def root_log_message(
+        self, previous_state: State | None, new_state: State | None
+    ) -> None:
+        self.root_logger.info(f"{previous_state} -> {new_state}")
+
     def build_states(self) -> None:
         states: list[State] = []
         for state in self.__pre_states__:
@@ -263,21 +269,18 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
     def build_markdown(self) -> None:
         markdown_path = self.__cls_path__.parent / (self.__cls_path__.stem + ".md")
-        markdown_state_name = lambda name: " ".join(re.findall("[A-Z][a-z]*", name))
 
         if not markdown_path.exists():
             with open(markdown_path, "w") as f:
-                md_header = f"# {markdown_state_name(self.__class__.__name__)}\n\n"
-                md_states = "\n\n".join(
-                    [f"## {markdown_state_name(state._state)}" for state in self.states]
-                )
+                md_header = f"# {self.__class__.__name__}\n\n"
+                md_states = "\n\n".join([f"## {str(state)}" for state in self.states])
                 f.write(md_header + md_states)
 
         else:
             self.markdown_file = MarkdownFile(markdown_path)
             for state in self.states:
                 state.markdown_section = self.markdown_file.header.children[
-                    "_".join(markdown_state_name(state._state).lower().split(" "))
+                    str(state._state)
                 ]
 
     def decorate_handlers(self) -> None:
@@ -315,6 +318,9 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
             self.enter_state(new_state)
 
         self.current_state = new_state
+
+        if getattr(self, "root_logger", None) is not None:
+            self.root_log_message(previous_state, self.current_state)
 
     def state_logic(self, state: State) -> None:
         state.handler()

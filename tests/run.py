@@ -4,6 +4,8 @@ from pathlib import Path
 sys.path.append(Path(__file__).parent.parent.as_posix())
 
 
+import os
+os.environ["STATESGROUP_LOGGING"] = "1"
 from fsm.state_group import *
 
 
