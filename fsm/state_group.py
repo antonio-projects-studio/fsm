@@ -216,6 +216,7 @@ def state_decorator(current_state: State) -> Callable:
 
 class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     result: Any = None
+    package: Any = None
     current_state: State | None = None
     states: tuple[State, ...]
     state_names: tuple[str, ...]
@@ -364,9 +365,9 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     def send_generator(self):
         fsm = iter(self)
 
-        self.arg = yield
+        self.package = yield
         while True:
-            self.arg = yield next(fsm)
+            self.package = yield next(fsm)
 
     def __contains__(self, item: Any) -> bool:
         if isinstance(item, str):
