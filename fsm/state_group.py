@@ -215,11 +215,11 @@ def state_decorator(current_state: State) -> Callable:
 
 
 class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
+    result: Any = None
+    current_state: State | None = None
     states: tuple[State, ...]
     state_names: tuple[str, ...]
-    current_state: State | None = None
     last_state: State
-    result: Any
     markdown_file: MarkdownFile
 
     MARKDOWN: bool = False
