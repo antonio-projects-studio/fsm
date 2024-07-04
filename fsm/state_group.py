@@ -292,7 +292,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     def set_start_state(self) -> State:
         return self.states[0]
 
-    def global_transition(self) -> State | None:
+    def global_transition(self) -> State | type[State] | None:
         return None
 
     def exit_state(self, previous_state: State) -> None:
