@@ -57,7 +57,7 @@ class State:
     state_type: StateType = StateType.DEFAULT
     next_state: State | None
     previous_state: State | None
-    description: str
+    description: str | None = None
     markdown_section: MarkdownSection
 
     @overload
@@ -115,7 +115,7 @@ class State:
         else:
             self.set_parent(owner.__class__)
 
-        if getattr(self, "state_message", None) is None:
+        if self.description is None:
             self.description = self._state
 
     def __str__(self) -> str:
