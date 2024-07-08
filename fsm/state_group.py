@@ -8,6 +8,7 @@ __all__ = [
     "any_state",
     "StatesGroupMeta",
     "StatesGroup",
+    "coroutine",
 ]
 
 import re
