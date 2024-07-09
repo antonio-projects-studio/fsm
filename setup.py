@@ -13,7 +13,7 @@ setup(
     description="Library for working with finite state machines",
     long_description=more_description,
     long_description_content_type="text/markdown",
-    url="ssh://github.com/antonio-projects-studio/fsm",
+    url="https://github.com/antonio-projects-studio/fsm",
     packages=find_packages(),
     install_requires=[
         "PyYAML",
