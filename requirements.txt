@@ -1,4 +1,4 @@
 python-frontmatter==1.1.0
 PyYAML==6.0.1
-terminal_app @ git+https://github.com/antonio-projects-studio/terminal_app.git@533f64fc4e4f6878f1426c926968948daf563e72
-markdown_reader @ git+https://github.com/antonio-projects-studio/markdown_reader.git@e0f19a8f065395728abf1ebe2cbcc220708e6542
+terminal_app @ git+https://github.com/antonio-projects-studio/terminal_app.git
+markdown_reader @ git+https://github.com/antonio-projects-studio/markdown_reader.git

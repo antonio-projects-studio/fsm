@@ -17,20 +17,11 @@ from functools import wraps
 from typing import Any, Iterator, Callable, overload
 from dataclasses import dataclass
 from terminal_app.logging import LoggingMeta, RootLogging
+from terminal_app.decorators import coroutine
 from markdown_reader import MarkdownFile, MarkdownSection
 from abc import abstractmethod
 from enum import StrEnum, auto
 from pathlib import Path
-
-
-def coroutine(func):
-    @wraps(func)
-    def wrapper_coroutine(*args, **kwargs):
-        f = func(*args, **kwargs)
-        next(f)
-        return f
-
-    return wrapper_coroutine
 
 
 class StateType(StrEnum):
@@ -278,12 +269,11 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
                 md_states = "\n\n".join([f"## {str(state)}" for state in self.states])
                 f.write(md_header + md_states)
 
-        else:
-            self.markdown_file = MarkdownFile(markdown_path)
-            for state in self.states:
-                state.markdown_section = self.markdown_file.header.children[
-                    str(state._state)
-                ]
+        self.markdown_file = MarkdownFile(markdown_path)
+        for state in self.states:
+            state.markdown_section = self.markdown_file.header.children[
+                str(state._state)
+            ]
 
     def decorate_handlers(self) -> None:
         for state in self.states:
