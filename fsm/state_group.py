@@ -11,10 +11,9 @@ __all__ = [
     "coroutine",
 ]
 
-import re
 import inspect
 from functools import wraps
-from typing import Any, Iterator, Callable, overload
+from typing import Any, Iterator, Callable, overload, Generator, NoReturn
 from dataclasses import dataclass
 from terminal_app.logging import LoggingMeta, RootLogging
 from terminal_app.decorators import coroutine
@@ -336,7 +335,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
         return self.result
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Iterator[Any]:
         return self
 
     def __next__(self) -> Any | type[StopIteration]:
@@ -353,7 +352,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
     @property
     @coroutine
-    def send_generator(self):
+    def send_generator(self) -> Generator[Any, Any, NoReturn]:
         fsm = iter(self)
 
         self.package = yield
