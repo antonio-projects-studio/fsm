@@ -313,6 +313,10 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
         if getattr(self, "root_logger", None) is not None:
             self.root_log_message(previous_state, self.current_state)
 
+    def get_state(self, state: type[State]) -> State:
+        ind = [state.__class__ for state in self.states].index(state)
+        return self.states[ind]
+
     def state_logic(self, state: State) -> None:
         state.handler()
 
@@ -322,8 +326,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
                 assert state in self.states
                 self.current_state = state
             if inspect.isclass(state):
-                ind = [state.__class__ for state in self.states].index(state)
-                self.current_state = self.states[ind]
+                self.current_state = self.get_state(state)
 
         while self.current_state:
             self.state_logic(self.current_state)
