@@ -216,6 +216,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     states: tuple[State, ...]
     state_names: tuple[str, ...]
     last_state: State
+    next_state: State
     markdown_file: MarkdownFile
 
     MARKDOWN: bool = False
@@ -311,6 +312,9 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
         if new_state:
             self.enter_state(new_state)
+        else:
+            if self.current_state is not None and self.current_state.next_state:
+                self.next_state = self.current_state.next_state
 
         self.current_state = new_state
 
@@ -366,7 +370,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
         ):
             raise StopIteration
 
-        return self.forward_run(self.last_state.next_state)
+        return self.forward_run(self.next_state)
 
     @property
     @coroutine
