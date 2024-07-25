@@ -324,6 +324,9 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     def state_logic(self, state: State) -> None:
         state.handler()
 
+    def check_package(self) -> State | type[State] | None | Next:
+        return Next()
+
     def forward_run(self, state: State | type[State] | None = None) -> Any:
         if state is not None:
             if isinstance(state, State):
@@ -331,6 +334,14 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
                 self.current_state = state
             if inspect.isclass(state):
                 self.current_state = self.get_state(state)
+
+        change_state = self.check_package()
+
+        if not isinstance(change_state, Next):
+            if inspect.isclass(change_state):
+                self.current_state = self.get_state(change_state)
+            else:
+                self.current_state = change_state
 
         while self.current_state:
             self.state_logic(self.current_state)
