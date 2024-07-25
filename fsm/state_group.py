@@ -8,7 +8,7 @@ __all__ = [
     "any_state",
     "StatesGroupMeta",
     "StatesGroup",
-    "coroutine",
+    "Next",
 ]
 
 import inspect
@@ -21,6 +21,10 @@ from markdown_reader import MarkdownFile, MarkdownSection
 from abc import abstractmethod
 from enum import StrEnum, auto
 from pathlib import Path
+
+
+class Next:
+    pass
 
 
 class StateType(StrEnum):
@@ -282,8 +286,8 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
     def set_start_state(self) -> State:
         return self.states[0]
 
-    def global_transition(self) -> State | type[State] | None:
-        return None
+    def global_transition(self) -> State | type[State] | None | Next:
+        return Next()
 
     def exit_state(self, previous_state: State) -> None:
         pass
@@ -333,7 +337,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
             new_state = self.global_transition()
 
-            if new_state is not None:
+            if not isinstance(new_state, Next):
                 self.set_state(new_state)
 
         return self.result
