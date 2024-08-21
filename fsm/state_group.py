@@ -361,10 +361,10 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
         return self
 
     def __next__(self) -> Any | type[StopIteration]:
-        if getattr(self, "last_state", None) is None:
+        if getattr(self, "next_state", None) is None:
             return self.forward_run()
 
-        if (
+        if getattr(self, "last_state", None) is not None and (
             self.last_state.state_type == StateType.FINISH
             or self.last_state.next_state is None
         ):
