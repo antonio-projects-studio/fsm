@@ -1,1 +1,3 @@
 .venv
+build/
+fsm.egg-info/

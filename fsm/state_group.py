@@ -146,7 +146,8 @@ class StatesGroupMeta(LoggingMeta):
         namespace: dict[str, Any],
         **kwargs,
     ):
-        cls = super(StatesGroupMeta, mcs).__new__(mcs, class_name, bases, namespace)
+        cls = super(StatesGroupMeta, mcs).__new__(
+            mcs, class_name, bases, namespace)
 
         pre_states = []
         children = []
@@ -249,7 +250,7 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
 
         self.states = tuple(states)
         self.state_names = tuple(state.state for state in states)
-        self.current_state = self.states[0]
+        self.next_state = self.states[0]
 
         for ind, state in enumerate(self.states):
             if ind > 0:
@@ -265,12 +266,14 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
             state.next_state = self.states[ind + 1]
 
     def build_markdown(self) -> None:
-        markdown_path = self.__cls_path__.parent / (self.__cls_path__.stem + ".md")
+        markdown_path = self.__cls_path__.parent / \
+            (self.__cls_path__.stem + ".md")
 
         if not markdown_path.exists():
             with open(markdown_path, "w") as f:
                 md_header = f"# {self.__class__.__name__}\n\n"
-                md_states = "\n\n".join([f"## {str(state)}" for state in self.states])
+                md_states = "\n\n".join(
+                    [f"## {str(state)}" for state in self.states])
                 f.write(md_header + md_states)
 
         self.markdown_file = MarkdownFile(markdown_path)
@@ -361,8 +364,6 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
         return self
 
     def __next__(self) -> Any | type[StopIteration]:
-        if getattr(self, "next_state", None) is None:
-            return self.forward_run()
 
         if getattr(self, "last_state", None) is not None and (
             self.last_state.state_type == StateType.FINISH
