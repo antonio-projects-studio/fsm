@@ -18,7 +18,7 @@ setup(
     install_requires=[
         "PyYAML",
         "python-frontmatter",
-        "terminal_app @ git+https://github.com/antonio-projects-studio/terminal_app.git",
-        "markdown_reader @ git+https://github.com/antonio-projects-studio/markdown_reader.git",
+        "terminal_app @ git+https://github.com/antonio-projects-studio/terminal_app.git@bc47d9b19b6240f3b34e66d2df54d1b625dff56d",
+        "markdown_reader @ git+https://github.com/antonio-projects-studio/markdown_reader.git@b8cec46c192a68346f63fb8b5bd5efd7afc1be61",
     ],
 )
