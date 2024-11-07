@@ -16,7 +16,7 @@ from functools import wraps
 from typing import Any, Iterator, Callable, overload, Generator, NoReturn
 from dataclasses import dataclass
 from terminal_app.logging import LoggingMeta, RootLogging
-from terminal_app.decorators import coroutine
+from terminal_app.decorator import coroutine
 from markdown_reader import MarkdownFile, MarkdownSection
 from abc import abstractmethod
 from enum import StrEnum, auto
@@ -146,8 +146,7 @@ class StatesGroupMeta(LoggingMeta):
         namespace: dict[str, Any],
         **kwargs,
     ):
-        cls = super(StatesGroupMeta, mcs).__new__(
-            mcs, class_name, bases, namespace)
+        cls = super(StatesGroupMeta, mcs).__new__(mcs, class_name, bases, namespace)
 
         pre_states = []
         children = []
@@ -266,14 +265,12 @@ class StatesGroup(RootLogging, metaclass=StatesGroupMeta):
             state.next_state = self.states[ind + 1]
 
     def build_markdown(self) -> None:
-        markdown_path = self.__cls_path__.parent / \
-            (self.__cls_path__.stem + ".md")
+        markdown_path = self.__cls_path__.parent / (self.__cls_path__.stem + ".md")
 
         if not markdown_path.exists():
             with open(markdown_path, "w") as f:
                 md_header = f"# {self.__class__.__name__}\n\n"
-                md_states = "\n\n".join(
-                    [f"## {str(state)}" for state in self.states])
+                md_states = "\n\n".join([f"## {str(state)}" for state in self.states])
                 f.write(md_header + md_states)
 
         self.markdown_file = MarkdownFile(markdown_path)
